@@ -1,0 +1,20 @@
+.vs/
+bin/
+obj/
+packages/
+AppPackages/
+BundleArtifacts/
+Generated Files/
+TestResults/
+*.user
+*.cer
+*.pfx
+.superpowers/
+artifacts/
+*.p12
+*.pem
+*.key
+*.snk
+
+# Pictures of the buds belong to Nothing; add your own locally (see README)
+src/MuggleBuds.App/Assets/CMF Buds Pro 2*.png
