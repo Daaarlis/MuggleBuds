@@ -91,7 +91,7 @@ public sealed class HeadsetViewModel : ObservableObject, IDisposable
     /// <summary>
     /// The buds' colors, each with its own pictures in Assets.
     /// </summary>
-    public static IReadOnlyList<string> BudsColors { get; } = ["Black", "Blue", "Orange", "White"];
+    public static IReadOnlyList<string> BudsColors { get; } = ["Blue", "Black", "Orange", "White"];
 
     /// <summary>
     /// This pair's color (Settings › Devices), which picks its pictures.

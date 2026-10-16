@@ -24,7 +24,9 @@ MuggleBuds puts the controls from [ear-web](https://github.com/radiance-project/
 
 ## Pictures
 
-Pictures of the buds belong to Nothing, so none are included and the app shows an icon until you add your own. Put transparent PNGs in `src\MuggleBuds.App\Assets`, named for the color you pick in Settings › Devices (Black, Blue, Orange or White):
+The pictures of the buds in `src\MuggleBuds.App\Assets` (`CMF Buds Pro 2 <Color>*.png`) are product pictures that belong to Nothing. They are not covered by the AGPL-3.0 license and are only there to show which buds the app controls. They will be removed if Nothing asks.
+
+There are pictures for Blue, Black, Orange and White; pick yours in Settings › Devices. To add another color, add transparent PNGs named like this and list the color in `HeadsetViewModel.BudsColors`. A color without pictures shows an icon:
 
 | File | Size |
 | --- | --- |
@@ -33,7 +35,7 @@ Pictures of the buds belong to Nothing, so none are included and the app shows a
 | `CMF Buds Pro 2 <Color> Right.png` | 256 x 256 |
 | `CMF Buds Pro 2 <Color> Case.png` | 299 x 377 |
 
-The colors are listed in `HeadsetViewModel.BudsColors`. Pictures keep their proportions, so the sizes are a guide.
+Pictures keep their proportions, so the sizes are a guide.
 
 ## Building From Source
 
@@ -66,6 +68,16 @@ The tray icons, the app icon and every package logo are drawn from `assets-src\b
 ```powershell
 pwsh -STA -File .\scripts\New-AppAssets.ps1
 ```
+
+### Installer Only (No Visual Studio)
+
+To build just the installer for x64 with the .NET SDK alone:
+
+```powershell
+.\scripts\Build-Msi.ps1 -Version 1.0.0.0
+```
+
+The MSI goes to `artifacts\release\v1.0.0.0`. It isn't signed, so Windows shows "Unknown publisher" when it runs. Add `-WithoutPictures` to leave the pictures of the buds out of it.
 
 ### Packaging
 
@@ -107,4 +119,4 @@ AGPL-3.0, see [LICENSE](LICENSE). Notices for the work it builds on are in [LICE
 
 ## Disclaimer
 
-MuggleBuds is an independent app and is not made, endorsed, or supported by Nothing or Google. Nothing and CMF are trademarks of Nothing Technology Limited. Pixel, Pixel Buds, and Google are trademarks of Google LLC.
+MuggleBuds is an independent app and is not made, endorsed, or supported by Nothing or Google. Nothing and CMF are trademarks of Nothing Technology Limited, which also owns the pictures of the buds. Pixel, Pixel Buds, and Google are trademarks of Google LLC.

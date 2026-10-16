@@ -46,11 +46,21 @@
                     Target="[APPLICATIONFOLDER]MuggleBuds.exe"
                     WorkingDirectory="APPLICATIONFOLDER"
                     Icon="AppIcon.ico">
-                    <ShortcutProperty Key="System.AppUserModel.ID" Value="Artistro08.MuggleBuds.Classic" />
+                    <ShortcutProperty Key="System.AppUserModel.ID" Value="MuggleBuds.Classic" />
                 </Shortcut>
                 <RegistryValue Root="HKMU" Key="Software\MuggleBuds" Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
             </Component>
         </StandardDirectory>
+
+        <!-- Quit A Running Copy: the tray app has no window for the installer to close, so without this
+             an install over it, or an uninstall, stops on "unable to automatically close all
+             requested applications". Running the app with its quit switch asks it to quit the way its
+             Quit menu does and returns once it has. Fails quietly when there is no copy or nothing
+             installed yet. -->
+        <CustomAction Id="QuitMuggleBuds" Directory="APPLICATIONFOLDER" ExeCommand="&quot;[APPLICATIONFOLDER]MuggleBuds.exe&quot; --quit" Execute="immediate" Return="ignore" />
+        <InstallExecuteSequence>
+            <Custom Action="QuitMuggleBuds" Before="InstallValidate" />
+        </InstallExecuteSequence>
 
         <!-- Everything -->
         <Feature Id="Main">

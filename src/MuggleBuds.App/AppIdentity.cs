@@ -20,7 +20,7 @@ public static class AppIdentity
     /// App ID the classic install claims at launch and its Start menu shortcut carries, which
     /// is what lets Windows show its notifications.
     /// </summary>
-    public const string ClassicAppUserModelId = "Artistro08.MuggleBuds.Classic";
+    public const string ClassicAppUserModelId = "MuggleBuds.Classic";
 
     private const int AppModelErrorNoPackage = 15700;
 

@@ -23,6 +23,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+The pictures of CMF Buds Pro 2 in src/MuggleBuds.App/Assets (CMF Buds Pro 2 <Color>*.png) are product
+pictures owned by Nothing Technology Limited. They are not covered by the license in LICENSE and are
+included only to show which buds the app controls.
+
 The CMF Buds protocol details (src/MuggleBuds.Presentation/Cmf) are based on ear-web,
 https://github.com/radiance-project/ear-web, which is licensed under the GNU Affero General Public
 License version 3, the same license as MuggleBuds itself (see LICENSE).
