@@ -24,6 +24,8 @@ public partial class App : Application, IDisposable
     private ILogger _logger = Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
     private AppSettings? _settings;
     private AppNotificationService? _notifications;
+    private static readonly TimeSpan QuitGrace = TimeSpan.FromSeconds(3);
+
     private HeadsetManager? _manager;
     private FlyoutViewModel? _flyout;
     private SettingsViewModel? _settingsViewModel;
@@ -344,5 +346,9 @@ public partial class App : Application, IDisposable
         AppLog.Quit(_logger);
         Dispose();
         Exit();
+
+        // If the process doesn't end by itself it would keep the buds' control channel open, and
+        // the next start couldn't connect. This ends it anyway.
+        _ = Task.Delay(QuitGrace).ContinueWith(_ => Environment.Exit(0), TaskScheduler.Default);
     }
 }

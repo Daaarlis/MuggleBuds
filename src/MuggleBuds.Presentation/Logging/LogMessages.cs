@@ -78,6 +78,9 @@ internal static partial class LogMessages
     [LoggerMessage(EventId = 501, Level = LogLevel.Debug, Message = "Buds didn't answer {Setting}; keeping its default")]
     public static partial void CmfSettingUnanswered(ILogger logger, string setting);
 
+    [LoggerMessage(EventId = 503, Level = LogLevel.Warning, Message = "The buds' control channel is already in use; {Others} other copies of this app are running")]
+    public static partial void CmfChannelBusy(ILogger logger, int others);
+
     [LoggerMessage(EventId = 502, Level = LogLevel.Debug, Message = "Buds sent an unreadable {Setting} reply")]
     public static partial void CmfReplyUnreadable(ILogger logger, string setting);
 

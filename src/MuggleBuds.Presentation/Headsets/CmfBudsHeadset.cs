@@ -1,4 +1,6 @@
+using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using MuggleBuds.Presentation.Cmf;
 using MuggleBuds.Presentation.Logging;
@@ -25,6 +27,9 @@ public sealed class CmfBudsHeadset : IHeadset
     // The buds apply a set a moment after receiving it; reading it back sooner can show the old value
     private static readonly TimeSpan ReadBackDelay = TimeSpan.FromMilliseconds(300);
     private static readonly TimeSpan CloseTimeout  = TimeSpan.FromSeconds(1);
+
+    // WSAEADDRINUSE: "Only one usage of each socket address is normally permitted"
+    private const int ChannelBusy = unchecked((int)0x80072740);
 
     // Read in this order when the link opens (ear-web reads them in much the same order)
     private static readonly (ushort Command, string Setting)[] StartupReads =
@@ -127,13 +132,42 @@ public sealed class CmfBudsHeadset : IHeadset
                 throw new IOException("The buds didn't answer on their control service.");
             }
         }
-        catch
+        catch (Exception ex)
         {
+            LogIfChannelBusy(ex);
+
             // The link may not be published yet (the socket failed to connect), so close it here too
             Disconnect();
             _ = link.Close(OnClientClosed);
             throw;
         }
+    }
+
+    // Windows says "address in use" when something already has the buds' control channel open: another
+    // app, or another copy of this one that hasn't ended
+    private void LogIfChannelBusy(Exception exception)
+    {
+        if (exception is not COMException { HResult: ChannelBusy })
+        {
+            return;
+        }
+
+        var others = 0;
+        var name = Path.GetFileNameWithoutExtension(Environment.ProcessPath);
+        if (name is not null)
+        {
+            foreach (var process in Process.GetProcessesByName(name))
+            {
+                using (process)
+                {
+                    if (process.Id != Environment.ProcessId)
+                    {
+                        others++;
+                    }
+                }
+            }
+        }
+        LogMessages.CmfChannelBusy(_logger, others);
     }
 
     /// <summary>
@@ -416,6 +450,9 @@ public sealed class CmfBudsHeadset : IHeadset
 
         private async Task CloseAsync()
         {
+            // The socket goes first, and before anything is awaited: that frees the buds' control
+            // channel at once (so the next start can open it) and ends the read the client is waiting on
+            Socket.Dispose();
             try
             {
                 if (Client is not null)
@@ -423,13 +460,12 @@ public sealed class CmfBudsHeadset : IHeadset
                     await Client.DisposeAsync().AsTask().WaitAsync(CloseTimeout).ConfigureAwait(false);
                 }
             }
-            catch (TimeoutException)
+            catch (Exception ex) when (ex is TimeoutException or ObjectDisposedException or IOException)
             {
                 // Close anyway
             }
             finally
             {
-                Socket.Dispose();
                 Device.Dispose();
             }
         }

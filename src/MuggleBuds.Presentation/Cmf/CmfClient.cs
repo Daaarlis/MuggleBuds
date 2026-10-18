@@ -137,8 +137,8 @@ internal sealed class CmfClient : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         await _lifetime.CancelAsync().ConfigureAwait(false);
-        _input.Dispose();
-        _output.Dispose();
+        DisposeQuietly(_input);
+        DisposeQuietly(_output);
         try
         {
             await _readLoop.ConfigureAwait(false);
@@ -218,6 +218,19 @@ internal sealed class CmfClient : IAsyncDisposable
         if (pending is not null && pending.Response == packet.Command)
         {
             pending.Completion.TrySetResult(packet);
+        }
+    }
+
+    // The streams may already be closed: the socket under them is closed first when a link ends
+    private static void DisposeQuietly(Stream stream)
+    {
+        try
+        {
+            stream.Dispose();
+        }
+        catch (Exception ex) when (ex is ObjectDisposedException or IOException or InvalidOperationException)
+        {
+            // Already closed with the socket
         }
     }
 
